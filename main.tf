@@ -7,7 +7,6 @@ terraform {
       version = ">= 5.40"
     }
   }
-
   backend "s3" {
     bucket = "kfb-github-terraform-state"
     key    = "real-time-insurance-infra/terraform.tfstate"
@@ -17,11 +16,9 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-
   assume_role {
     role_arn = "arn:aws:iam::${var.destination_account_id}:role/kfb-terraform-assume-role"
   }
-
   default_tags {
     tags = {
       "application_name"      = "realtimeinsurance"
