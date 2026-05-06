@@ -1,0 +1,95 @@
+name: tofu-plan
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: "Workspace to plan (must match envs/<workspace>.tfvars). Defaults to dev."
+        required: false
+        type: string
+        default: dev
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+
+    # Use dev environment for push, otherwise use the selected workspace name.
+    environment: ${{ github.event_name == 'push' && 'dev' || inputs.workspace }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Required for getsentry/action-github-app-token in your environment (per your existing examples)
+      - name: Set up Node.js (for GitHub App auth step below)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Octokit
+        run: npm install octokit
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: latest
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Environment-scoped secret (set this in each GitHub Environment)
+          role-to-assume: ${{ secrets.AWS_TOFU_ROLE_ARN }}
+          aws-region: us-east-1
+
+      # --- GitHub App token (cross-repo read) ---
+      - name: Get KFB GitHub App Token
+        id: get_workflow_token
+        uses: getsentry/action-github-app-token@d4b5da6c5e37703f8c3b3e43abb5705b46e159cc # v3.0.0
+        with:
+          app_id: ${{ secrets.CROSS_REPO_APP_ID }}
+          private_key: ${{ secrets.CROSS_REPO_KEY }}
+
+      - name: Configure git for cross-repo access
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global url."https://x-access-token:${{ steps.get_workflow_token.outputs.token }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Resolve workspace
+        id: ws
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "workspace=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "workspace=${{ inputs.workspace }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tofu init
+        run: tofu init
+
+      - name: Select/Create workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          WS="${{ steps.ws.outputs.workspace }}"
+          tofu workspace select "$WS" 2>/dev/null || tofu workspace new "$WS"
+
+      - name: Tofu plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          WS="${{ steps.ws.outputs.workspace }}"
+          VARFILE="envs/${WS}.tfvars"
+          test -f "$VARFILE" || { echo "ERROR: Missing tfvars file: $VARFILE"; exit 1; }
+          tofu plan -no-color -var-file="$VARFILE"
