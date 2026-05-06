@@ -1,5 +1,5 @@
 module "api_gateway" {
-  source = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=main"
+  source = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=v1.0.0"
 
   name          = "${var.application_name}-${var.env_tier}-api-gateway"
   is_production = false
@@ -11,6 +11,11 @@ module "api_gateway" {
       path       = "/hello"
       method     = "GET"
       lambda_arn = module.hello_lambda.lambda_function_arn
+    },
+    {
+      path       = "/sample"
+      method     = "GET"
+      lambda_arn = module.sample_lambda.lambda_function_arn
     }
   ]
 }
