@@ -1,0 +1,10 @@
+entra_audience = "api://585f3a95-8bf5-4df4-b80b-585ca5ca2071"
+env_tier = "dev"
+destination_account_id = "058264370150"
+vpc_id = "vpc-05b9da12fe9d64805"
+lambda_subnet_ids = ["subnet-0af508befdea0ef9f"]
+aurora_subnet_ids = ["subnet-0af508befdea0ef9f","subnet-0af4371561e8a331b"]
+db_engine_mode = "serverless"
+replicas = 1
+serverless_v2_min_acu = 0.5
+serverless_v2_max_acu = 2
