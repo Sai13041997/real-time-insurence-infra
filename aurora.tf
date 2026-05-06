@@ -1,21 +1,20 @@
 resource "aws_db_subnet_group" "aurora" {
   name       = "${var.application_name}-${var.env_tier}-db-subnet-group"
   subnet_ids = var.aurora_subnet_ids
-
   tags = {
     Name = "${var.application_name}-${var.env_tier}-db-subnet-group"
   }
 }
 
 module "aurora_security_group" {
-  source      = "git::https://github.com/kfbmic/tf-module-vpc-security-group.git?ref=main"
+  source      = "git::https://github.com/kfbmic/tf-module-vpc-security-group.git?ref=v1.0.0"
   name        = "${var.application_name}-${var.env_tier}-aurora-sg"
   description = "Allows access for developers and applications to connect"
   vpc_id      = var.vpc_id
 
   inbound_rules = [
     {
-      "description" : "Secure Desktops",
+      "description" : "Secure Desctops",
       "ip_protocol" : "-1",
       "cidr_ipv4" : "10.214.0.0/16",
     },
@@ -63,7 +62,7 @@ module "aurora_security_group" {
       "description" : "Non Production F5 App Vlan",
       "ip_protocol" : "-1",
       "cidr_ipv4" : "10.218.17.0/24",
-    },
+    }
   ]
 
   outbound_rules = [
@@ -83,9 +82,13 @@ resource "aws_rds_cluster" "aurora" {
   # IMPORTANT:
   # Aurora Serverless v2 uses engine_mode = "provisioned" (Serverless v1 used engine_mode="serverless")
   engine_mode = "provisioned"
-
+  
   master_username             = "kfb_aurora_admin"
   manage_master_user_password = true
+
+  iam_database_authentication_enabled = true
+  performance_insights_enabled = true
+
 
   skip_final_snapshot     = false
   backup_retention_period = 7
