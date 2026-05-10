@@ -5,7 +5,7 @@
 application_name       = "realtimeinsurance"
 env_tier               = "sandbox"
 destination_account_id = "332504859566"
-vpc_id                 = ""
+vpc_id                 = "vpc-0678e3b232c59bd64"
 entra_audience         = "YOUR_ENTRA_AUDIENCE"
 lambda_subnet_ids      = ["subnet-xxxx", "subnet-yyyy"]
 aurora_subnet_ids      = ["subnet-xxxx", "subnet-yyyy"]
