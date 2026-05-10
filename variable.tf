@@ -66,3 +66,35 @@ variable "serverless_v2_max_acu" {
   type        = number
   default     = 2
 }
+
+# --------------------------------------------------
+# SOAP API Gateway Variables
+# Used for Kentucky IVS SOAP integration
+# --------------------------------------------------
+
+variable "is_production" {
+  description = "Flag to indicate if this is a production environment."
+  type        = bool
+  default     = false
+}
+
+variable "truststore_bucket" {
+  description = "S3 bucket name where the mTLS truststore PEM is stored."
+  type        = string
+}
+
+variable "truststore_key" {
+  description = "S3 object key for the truststore PEM file."
+  type        = string
+  default     = "truststore.pem"
+}
+
+variable "soap_domain_name" {
+  description = "Custom domain name for the SOAP API Gateway."
+  type        = string
+}
+
+variable "soap_acm_certificate_arn" {
+  description = "ACM certificate ARN for the SOAP API Gateway custom domain."
+  type        = string
+}
