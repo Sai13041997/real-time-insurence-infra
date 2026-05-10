@@ -7,8 +7,8 @@ env_tier               = "sandbox"
 destination_account_id = "332504859566"
 vpc_id                 = "vpc-0678e3b232c59bd64"
 entra_audience         = "YOUR_ENTRA_AUDIENCE"
-lambda_subnet_ids      = ["subnet-xxxx", "subnet-yyyy"]
-aurora_subnet_ids      = ["subnet-xxxx", "subnet-yyyy"]
+lambda_subnet_ids      = ["subnet-012ce60243ca69a31", "subnet-09e1f6bb939d9d0f6"]
+aurora_subnet_ids      = ["subnet-012ce60243ca69a31", "subnet-09e1f6bb939d9d0f6"]
 db_engine_mode         = "serverless"
 is_production          = false
 
@@ -16,4 +16,4 @@ is_production          = false
 truststore_bucket        = "kfbmic-mtls-truststore-sandbox"
 truststore_key           = "truststore.pem"
 soap_domain_name         = "soap-sandbox.example.com"
-soap_acm_certificate_arn = "arn:aws:acm:us-east-1:YOUR_ACCOUNT_ID:certificate/YOUR_CERT_ID"
+soap_acm_certificate_arn = ""
