@@ -67,34 +67,22 @@ variable "serverless_v2_max_acu" {
   default     = 2
 }
 
-# --------------------------------------------------
-# SOAP API Gateway Variables
-# Used for Kentucky IVS SOAP integration
-# --------------------------------------------------
-
-variable "is_production" {
-  description = "Flag to indicate if this is a production environment."
-  type        = bool
-  default     = false
-}
-
-variable "truststore_bucket" {
-  description = "S3 bucket name where the mTLS truststore PEM is stored."
+variable "soap_api_certificate_arn" {
+  description = "ARN of the ACM certificate for soap-api-dev.devkyfb.com. Created manually in the AWS console — copy the ARN from ACM and paste it into dev.tfvars."
   type        = string
 }
 
-variable "truststore_key" {
-  description = "S3 object key for the truststore PEM file."
-  type        = string
-  default     = "truststore.pem"
-}
-
-variable "soap_domain_name" {
-  description = "Custom domain name for the SOAP API Gateway."
+variable "soap_api_domain_name" {
+  description = "Full subdomain for the SOAP API (e.g. soap-api-dev.devkyfb.com)."
   type        = string
 }
 
-variable "soap_acm_certificate_arn" {
-  description = "ACM certificate ARN for the SOAP API Gateway custom domain."
+variable "soap_api_hosted_zone" {
+  description = "The Route 53 hosted zone the subdomain belongs to (e.g. devkyfb.com)."
+  type        = string
+}
+
+variable "network_account_id" {
+  description = "AWS Account ID of the network account where devkyfb.com is registered in Route 53. Used by the aws.networkacc provider."
   type        = string
 }
