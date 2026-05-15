@@ -31,3 +31,22 @@ provider "aws" {
     }
   }
 }
+
+provider "aws" {
+  alias = "networkaccount"
+  region = "us-east-1"
+  assume_role {
+    role_arn = "arn:aws:iam::${var.network_account_id}:role/kfb-terraform-assume-role"
+  } 
+  default_tags {
+    tags = {
+      "application_name"      = "realtimeinsurance"
+      "terraform"             = "true"
+      "source"                = "github.com/kfbmic/real-time-insurance-infra"
+      "created_by"            = "PlatformEngineering@kyfb.com"
+      "requested_by"          = "PMOGroup@kyfb.com"
+      "owned_by"              = "CloudOps@kyfb.com"
+      "business_ops_category" = "POL"
+    }
+  }
+}
