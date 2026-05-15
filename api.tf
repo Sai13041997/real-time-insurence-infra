@@ -1,18 +1,13 @@
-# --------------------------------------------------
-# Ingest REST API Gateway
-# Used for Guidewire App Event webhook integration
-# JWT authentication via Entra
-# --------------------------------------------------
-
 module "api_gateway" {
-  source        = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=main"
+  source = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=v1.0.0"
+
   name          = "${var.application_name}-${var.env_tier}-api-gateway"
   is_production = false
-  jwt_audience  = ["${var.entra_audience}"]
+
+  jwt_audience = ["${var.entra_audience}"]
 
   routes = [
     {
-      # Health check endpoint
       path       = "/hello"
       method     = "GET"
       lambda_arn = module.hello_lambda.lambda_function_arn
@@ -20,35 +15,36 @@ module "api_gateway" {
   ]
 }
 
-# --------------------------------------------------
-# SOAP API Gateway (Kentucky IVS integration)
-# Receives SOAP 1.1 CoverageRequest from Kentucky IVS
-# mTLS authentication using Kentucky IVS client cert
-# Truststore stored in S3 bucket
-# Routes to Lambda SOAP Handler
-# --------------------------------------------------
-
+# ── SOAP API gateway ────────────────────────────────────────────────────────
+# Uses the existing sample_lambda as the backend.
+# Pinned to v1.1.0 of the module which adds the mTLS / custom domain
+# resources (dormant until domain_name is passed in).
+#
+# To enable mTLS later, add these three arguments to this module block:
+#   domain_name              = "soap-api.mvsolutions.com"
+#   regional_certificate_arn = "arn:aws:acm:us-east-1:XXXX:certificate/XXXX"
+#   mtls_truststore_uri      = "s3://your-bucket/truststore.pem"
+# ---------------------------------------------------------------------------
 module "soap_api_gateway" {
-  source        = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=main"
+  source        = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=feature/T012SP/CPE-178"
   name          = "${var.application_name}-${var.env_tier}-soap-api-gateway"
-  is_production = var.is_production
+  is_production = false
+  jwt_audience  = ["${var.entra_audience}"]
 
-  # No JWT - mTLS handles authentication
-  jwt_audience = []
+  custom_ip_whitelist = [
+    "192.0.2.10/32",   # replace with real SOAP consumer IP
+    "192.0.2.20/32",   # replace with real SOAP consumer IP
+    "198.51.100.5/32", # replace with real SOAP consumer IP
+  ]
 
-  # mTLS configuration
-  # Truststore contains Kentucky IVS client certificate
-  mtls_enabled        = true
-  truststore_uri      = "s3://${var.truststore_bucket}/${var.truststore_key}"
-  custom_domain_name  = var.soap_domain_name
-  acm_certificate_arn = var.soap_acm_certificate_arn
+  domain_name              = var.soap_api_domain_name
+  regional_certificate_arn = var.soap_api_certificate_arn
+  mtls_truststore_uri = "s3://${aws_s3_bucket.soap_api_truststore.bucket}/truststore.pem"
 
   routes = [
     {
-      # SOAP verification endpoint
-      # Kentucky IVS sends CoverageRequest SOAP XML here
-      path       = "/verify"
-      method     = "POST"
+      path       = "/soap"
+      method     = "GET"
       lambda_arn = module.sample_lambda.lambda_function_arn
     }
   ]
