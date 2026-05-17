@@ -39,8 +39,8 @@ module "soap_api_gateway" {
 
   domain_name              = var.soap_api_domain_name
   regional_certificate_arn = var.soap_api_certificate_arn
-  mtls_truststore_uri = "s3://${aws_s3_bucket.soap_api_truststore.bucket}/truststore.pem"
-
+  mtls_truststore_uri = "s3://${aws_s3_bucket.soap_api_truststore.bucket}/soap-truststore/truststore.pem"
+  
   routes = [
     {
       path       = "/soap"
