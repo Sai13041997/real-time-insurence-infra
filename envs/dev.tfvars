@@ -9,6 +9,5 @@ replicas = 1
 serverless_v2_min_acu = 0.5
 serverless_v2_max_acu = 2
 network_account_id = "988597495512"
-soap_api_certificate_arn = "arn:aws:acm:us-east-1:058264370150:certificate/f54ff8d0-4514-40ce-95ea-d5ac66d1dd22"
+soap_api_certificate_arn = "arn:aws:acm:us-east-1:058264370150:certificate/63832190-4874-46d7-89c8-31379e32d6c0"
 soap_api_domain_name  = "soap-api-dev.devkyfb.com"
-soap_api_hosted_zone  = "devkyfb.com"
