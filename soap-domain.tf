@@ -10,11 +10,11 @@
 
 # ── Route 53 hosted zone lookup (network account) ───────────────────────────
 
-data "aws_route53_zone" "devkyfb" {
-  provider = aws.networkaccount
-  name         = var.soap_api_hosted_zone
-  private_zone = false
-}
+#data "aws_route53_zone" "devkyfb" {
+#  provider = aws.networkaccount
+#  name         = var.soap_api_hosted_zone
+#  private_zone = false
+#}
 
 # ── S3 bucket for mTLS truststore (destination account) ─────────────────────
 # Upload your CA certificate here when you are ready to enable mTLS:
@@ -47,14 +47,14 @@ resource "aws_s3_bucket_public_access_block" "soap_api_truststore" {
 # ── Route 53 CNAME — subdomain → API Gateway regional endpoint ──────────────
 # Uses networkacc provider because the hosted zone lives in the network account.
 
-resource "aws_route53_record" "soap_api" {
-  provider = aws.networkaccount
-  zone_id = data.aws_route53_zone.devkyfb.zone_id
-  name    = var.soap_api_domain_name
-  type    = "CNAME"
-  ttl     = 300
-  records = [module.soap_api_gateway.custom_domain_target]
-}
+#resource "aws_route53_record" "soap_api" {
+#  provider = aws.networkaccount
+#  zone_id = data.aws_route53_zone.devkyfb.zone_id
+#  name    = var.soap_api_domain_name
+#  type    = "CNAME"
+#  ttl     = 300
+# records = [module.soap_api_gateway.custom_domain_target]
+#}
 
 # ── Outputs ──────────────────────────────────────────────────────────────────
 
