@@ -1,5 +1,5 @@
 module "hello_lambda" {
-  source      = "git::https://github.com/kfbmic/tf-module-lambda-function.git?ref=v1.0.0"
+  source      = "git::https://github.com/kfbmic/tf-module-lambda-function.git?ref=v1.1.0"
   name = "${var.application_name}-${var.env_tier}-hello-lambda"
   runtime = "python3.13"
   handler = "index.handler"
@@ -14,7 +14,7 @@ module "hello_lambda" {
 }
 
 module "sample_lambda" {
-  source      = "git::https://github.com/kfbmic/tf-module-lambda-function.git?ref=v1.0.0"
+  source      = "git::https://github.com/kfbmic/tf-module-lambda-function.git?ref=v1.1.0"
   name = "${var.application_name}-${var.env_tier}-sample-lambda"
   runtime = "python3.13"
   handler = "index.handler"
