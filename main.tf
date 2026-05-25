@@ -36,7 +36,7 @@ provider "aws" {
   alias = "networkaccount"
   region = "us-east-1"
   assume_role {
-    role_arn = "arn:aws:iam::${var.network_account_id}:role/kfb-terraform-assume-role"
+    role_arn = "arn:aws:iam::988597495512:role/kfb-terraform-assume-role"
   } 
   default_tags {
     tags = {
