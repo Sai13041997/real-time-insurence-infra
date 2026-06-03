@@ -1,13 +1,15 @@
 module "soap_api_gateway" {
-  source        = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=v1.1.0"
+  source        = "git::https://github.com/kfbmic/tf-module-api-gateway.git?ref=v1.1.1"
   name          = "${var.application_name}-${var.env_tier}-soap-api-gateway"
   is_production = false
   jwt_audience  = ["${var.entra_audience}"]
 
   custom_ip_whitelist = [
-    "192.0.2.10/32",   # replace with real SOAP consumer IP
-    "192.0.2.20/32",   # replace with real SOAP consumer IP
-    "198.51.100.5/32", # replace with real SOAP consumer IP
+    #"192.0.2.10/32",   # replace with real SOAP consumer IP
+    #"192.0.2.20/32",   # replace with real SOAP consumer IP
+    #"198.51.100.5/32", # replace with real SOAP consumer IP
+    "163.116.145.87/32",  # Zach's IP
+    "163.116.146.114/32", # Testing IP 
   ]
 
   domain_name              = var.soap_api_domain_name
@@ -17,8 +19,8 @@ module "soap_api_gateway" {
   routes = [
     {
       path       = "/soap"
-      method     = "GET"
-      lambda_arn = module.sample_lambda.lambda_function_arn
+      method     = "POST"
+      lambda_arn = module.soap_verification_lambda.lambda_function_arn
     }
   ]
 }
