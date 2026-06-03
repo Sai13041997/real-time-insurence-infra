@@ -78,3 +78,19 @@ resource "aws_acm_certificate_validation" "cert" {
   certificate_arn         = aws_acm_certificate.soap_api.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
+
+# ── DNS routing to API Gateway ─────────────────────────────
+
+
+resource "aws_route53_record" "soap_api_dns" {
+  provider = aws.networkaccount
+
+  zone_id = data.aws_route53_zone.kyfb.zone_id
+  name    = var.soap_api_domain_name
+  type    = "CNAME"
+  ttl     = 300
+
+  records = [
+    module.soap_api_gateway.custom_domain_target
+  ]
+}
