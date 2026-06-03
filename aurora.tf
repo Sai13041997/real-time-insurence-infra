@@ -77,7 +77,7 @@ resource "aws_rds_cluster" "aurora" {
   cluster_identifier = "${var.application_name}-${var.env_tier}-aurora-cluster"
 
   engine         = "aurora-postgresql"
-  engine_version = "17.4"
+  engine_version = "17.7"
 
   # IMPORTANT:
   # Aurora Serverless v2 uses engine_mode = "provisioned" (Serverless v1 used engine_mode="serverless")
